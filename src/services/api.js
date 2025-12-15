@@ -50,7 +50,9 @@ export const attendanceAPI = {
   checkOut: () => api.post('/attendance/check-out'),
 
   // ADMIN / HR
-  getAllAttendance: () => api.get('/attendance/all')
+  getAllAttendance: () => api.get('/attendance/all'),
+  getTodayAttendance: () => api.get('/attendance/today'),
+  getEmployeeAttendance: (id) => api.get(`/attendance/employee/${id}`)
 };
 
 /* ================= LEAVE ================= */
