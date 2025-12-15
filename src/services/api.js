@@ -2,21 +2,28 @@ import axios from 'axios';
 
 /* ================= BASE CONFIG ================= */
 
-const API_URL = 'https://amcl-hr-connect-backend.onrender.com/api';
-
 const api = axios.create({
-    baseURL: API_URL,
-    withCredentials: true, // 🔴 REQUIRED for express-session
+    baseURL: 'https://amcl-hr-connect-backend.onrender.com/api',
+    withCredentials: true, // 🔴 MUST for session
     headers: {
         'Content-Type': 'application/json'
     }
 });
 
+// 🔴 ENSURE COOKIE IS ALWAYS SENT
+api.interceptors.request.use(
+    (config) => {
+        config.withCredentials = true;
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
 /* ================= AUTH ================= */
 
 export const authAPI = {
     login: (data) => api.post('/auth/login', data),
-    register: (data) => api.post('/auth/register', data), // ✅ FIXED
+    register: (data) => api.post('/auth/register', data),
     logout: () => api.post('/auth/logout'),
     checkAuth: () => api.get('/auth/check')
 };
@@ -28,7 +35,6 @@ export const dashboardAPI = {
 };
 
 /* ================= PROFILE ================= */
-/* Profile is served from /users/me */
 
 export const profileAPI = {
     getProfile: () => api.get('/users/me'),
@@ -40,44 +46,27 @@ export const profileAPI = {
 export const attendanceAPI = {
     getMyAttendance: () => api.get('/attendance/my'),
     checkIn: () => api.post('/attendance/check-in'),
-    checkOut: () => api.post('/attendance/check-out'),
-    getAllAttendance: () => api.get('/attendance/all') // Admin / HR
+    checkOut: () => api.post('/attendance/check-out')
 };
 
 /* ================= LEAVE ================= */
 
 export const leaveAPI = {
     getMyLeaves: () => api.get('/leaves/my'),
-    applyLeave: (data) => api.post('/leaves/apply', data),
-    getAllLeaves: () => api.get('/leaves/all'), // Admin / HR
-    updateLeaveStatus: (leaveId, status) =>
-        api.put('/leaves/status', { leaveId, status })
+    applyLeave: (data) => api.post('/leaves/apply', data)
 };
 
 /* ================= PERFORMANCE ================= */
 
 export const performanceAPI = {
-    getReviews: () => api.get('/performance'),
-    createReview: (data) => api.post('/performance', data) // Admin / HR
+    getReviews: () => api.get('/performance')
 };
 
 /* ================= COMMUNICATION ================= */
 
 export const communicationAPI = {
     getMessages: () => api.get('/messages'),
-    sendMessage: (data) => api.post('/messages', data),
-    getUnreadCount: () => api.get('/messages/unread'),
-    getAnnouncements: () => api.get('/messages/announcements'),
-    createAnnouncement: (data) =>
-        api.post('/messages/announcements', data)
-};
-
-/* ================= USERS (ADMIN / HR) ================= */
-
-export const userAPI = {
-    getUsers: () => api.get('/users'),
-    getUserById: (id) => api.get(`/users/${id}`),
-    deleteUser: (id) => api.delete(`/users/${id}`)
+    getAnnouncements: () => api.get('/messages/announcements')
 };
 
 export default api;
