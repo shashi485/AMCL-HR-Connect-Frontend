@@ -3,70 +3,86 @@ import axios from 'axios';
 /* ================= BASE CONFIG ================= */
 
 const api = axios.create({
-    baseURL: 'https://amcl-hr-connect-backend.onrender.com/api',
-    withCredentials: true, // 🔴 MUST for session
-    headers: {
-        'Content-Type': 'application/json'
-    }
+  baseURL: 'https://amcl-hr-connect-backend.onrender.com/api',
+  withCredentials: true, // 🔴 REQUIRED FOR SESSION
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
-// 🔴 ENSURE COOKIE IS ALWAYS SENT
+/* 🔴 FORCE COOKIE FOR SAFARI / BRAVE */
 api.interceptors.request.use(
-    (config) => {
-        config.withCredentials = true;
-        return config;
-    },
-    (error) => Promise.reject(error)
+  (config) => {
+    config.withCredentials = true;
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
 /* ================= AUTH ================= */
 
 export const authAPI = {
-    login: (data) => api.post('/auth/login', data),
-    register: (data) => api.post('/auth/register', data),
-    logout: () => api.post('/auth/logout'),
-    checkAuth: () => api.get('/auth/check')
+  login: (data) => api.post('/auth/login', data),
+  register: (data) => api.post('/auth/register', data),
+  logout: () => api.post('/auth/logout'),
+  checkAuth: () => api.get('/auth/check')
 };
 
 /* ================= DASHBOARD ================= */
 
 export const dashboardAPI = {
-    getStats: () => api.get('/dashboard/stats')
+  getStats: () => api.get('/dashboard/stats')
 };
 
 /* ================= PROFILE ================= */
 
 export const profileAPI = {
-    getProfile: () => api.get('/users/me'),
-    updateProfile: (data) => api.put('/users/me', data)
+  getProfile: () => api.get('/users/me'),
+  updateProfile: (data) => api.put('/users/me', data)
 };
 
 /* ================= ATTENDANCE ================= */
 
 export const attendanceAPI = {
-    getMyAttendance: () => api.get('/attendance/my'),
-    checkIn: () => api.post('/attendance/check-in'),
-    checkOut: () => api.post('/attendance/check-out')
+  // EMPLOYEE
+  getMyAttendance: () => api.get('/attendance/my'),
+  checkIn: () => api.post('/attendance/check-in'),
+  checkOut: () => api.post('/attendance/check-out'),
+
+  // ADMIN / HR
+  getAllAttendance: () => api.get('/attendance/all')
 };
 
 /* ================= LEAVE ================= */
 
 export const leaveAPI = {
-    getMyLeaves: () => api.get('/leaves/my'),
-    applyLeave: (data) => api.post('/leaves/apply', data)
+  // EMPLOYEE
+  getMyLeaves: () => api.get('/leaves/my'),
+  applyLeave: (data) => api.post('/leaves/apply'),
+
+  // ADMIN / HR
+  getAllLeaves: () => api.get('/leaves/all'),
+  updateLeaveStatus: (leaveId, status) =>
+    api.put('/leaves/status', { leaveId, status })
 };
 
 /* ================= PERFORMANCE ================= */
 
 export const performanceAPI = {
-    getReviews: () => api.get('/performance')
+  // EMPLOYEE
+  getReviews: () => api.get('/performance'),
+
+  // ADMIN / HR
+  createReview: (data) => api.post('/performance', data)
 };
 
 /* ================= COMMUNICATION ================= */
 
 export const communicationAPI = {
-    getMessages: () => api.get('/messages'),
-    getAnnouncements: () => api.get('/messages/announcements')
+  getMessages: () => api.get('/messages'),
+  sendMessage: (data) => api.post('/messages', data),
+  getAnnouncements: () => api.get('/messages/announcements'),
+  createAnnouncement: (data) => api.post('/messages/announcements', data)
 };
 
 export default api;
