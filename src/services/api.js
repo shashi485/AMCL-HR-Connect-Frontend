@@ -2,7 +2,7 @@ import axios from 'axios';
 
 /* ================= BASE CONFIG ================= */
 
-const API_URL = 'http://localhost:5001/api';
+const API_URL = 'https://amcl-hr-connect-backend.onrender.com/api';
 
 const api = axios.create({
     baseURL: API_URL,
