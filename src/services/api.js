@@ -4,16 +4,22 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'https://amcl-hr-connect-backend.onrender.com/api',
-  withCredentials: true, // 🔴 REQUIRED FOR SESSION
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-/* 🔴 FORCE COOKIE FOR SAFARI / BRAVE */
+/* ================= JWT INTERCEPTOR ================= */
+/* 🔴 THIS IS THE MOST IMPORTANT PART */
+
 api.interceptors.request.use(
   (config) => {
-    config.withCredentials = true;
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -23,9 +29,7 @@ api.interceptors.request.use(
 
 export const authAPI = {
   login: (data) => api.post('/auth/login', data),
-  register: (data) => api.post('/auth/register', data),
-  logout: () => api.post('/auth/logout'),
-  checkAuth: () => api.get('/auth/check')
+  register: (data) => api.post('/auth/register', data)
 };
 
 /* ================= DASHBOARD ================= */
@@ -44,12 +48,12 @@ export const profileAPI = {
 /* ================= ATTENDANCE ================= */
 
 export const attendanceAPI = {
-  // EMPLOYEE
+  // Employee
   getMyAttendance: () => api.get('/attendance/my'),
   checkIn: () => api.post('/attendance/check-in'),
   checkOut: () => api.post('/attendance/check-out'),
 
-  // ADMIN / HR
+  // Admin / HR
   getAllAttendance: () => api.get('/attendance/all'),
   getTodayAttendance: () => api.get('/attendance/today'),
   getEmployeeAttendance: (id) => api.get(`/attendance/employee/${id}`)
@@ -58,11 +62,11 @@ export const attendanceAPI = {
 /* ================= LEAVE ================= */
 
 export const leaveAPI = {
-  // EMPLOYEE
+  // Employee
   getMyLeaves: () => api.get('/leaves/my'),
   applyLeave: (data) => api.post('/leaves/apply'),
 
-  // ADMIN / HR
+  // Admin / HR
   getAllLeaves: () => api.get('/leaves/all'),
   updateLeaveStatus: (leaveId, status) =>
     api.put('/leaves/status', { leaveId, status })
@@ -71,10 +75,10 @@ export const leaveAPI = {
 /* ================= PERFORMANCE ================= */
 
 export const performanceAPI = {
-  // EMPLOYEE
+  // Employee
   getReviews: () => api.get('/performance'),
 
-  // ADMIN / HR
+  // Admin / HR
   createReview: (data) => api.post('/performance', data)
 };
 
@@ -84,7 +88,8 @@ export const communicationAPI = {
   getMessages: () => api.get('/messages'),
   sendMessage: (data) => api.post('/messages', data),
   getAnnouncements: () => api.get('/messages/announcements'),
-  createAnnouncement: (data) => api.post('/messages/announcements', data)
+  createAnnouncement: (data) =>
+    api.post('/messages/announcements', data)
 };
 
 export default api;
