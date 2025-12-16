@@ -10,16 +10,13 @@ const api = axios.create({
 });
 
 /* ================= JWT INTERCEPTOR ================= */
-/* 🔴 THIS IS THE MOST IMPORTANT PART */
 
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
-
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config;
   },
   (error) => Promise.reject(error)
@@ -48,12 +45,10 @@ export const profileAPI = {
 /* ================= ATTENDANCE ================= */
 
 export const attendanceAPI = {
-  // Employee
   getMyAttendance: () => api.get('/attendance/my'),
   checkIn: () => api.post('/attendance/check-in'),
   checkOut: () => api.post('/attendance/check-out'),
 
-  // Admin / HR
   getAllAttendance: () => api.get('/attendance/all'),
   getTodayAttendance: () => api.get('/attendance/today'),
   getEmployeeAttendance: (id) => api.get(`/attendance/employee/${id}`)
@@ -62,11 +57,9 @@ export const attendanceAPI = {
 /* ================= LEAVE ================= */
 
 export const leaveAPI = {
-  // Employee
   getMyLeaves: () => api.get('/leaves/my'),
   applyLeave: (data) => api.post('/leaves/apply'),
 
-  // Admin / HR
   getAllLeaves: () => api.get('/leaves/all'),
   updateLeaveStatus: (leaveId, status) =>
     api.put('/leaves/status', { leaveId, status })
@@ -79,6 +72,7 @@ export const performanceAPI = {
   getReviews: () => api.get('/performance'),
 
   // Admin / HR
+  getEmployees: () => api.get('/performance/employees'),
   createReview: (data) => api.post('/performance', data)
 };
 
@@ -88,8 +82,7 @@ export const communicationAPI = {
   getMessages: () => api.get('/messages'),
   sendMessage: (data) => api.post('/messages', data),
   getAnnouncements: () => api.get('/messages/announcements'),
-  createAnnouncement: (data) =>
-    api.post('/messages/announcements', data)
+  createAnnouncement: (data) => api.post('/messages/announcements', data)
 };
 
 export default api;
