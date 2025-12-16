@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { performanceAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
-/* =====================================================
-   ADMIN CREATE REVIEW FORM (NEW - UI SAFE)
-===================================================== */
+/* ================= ADMIN CREATE REVIEW ================= */
 const CreateReviewForm = ({ onCreated }) => {
   const [employees, setEmployees] = useState([]);
   const [form, setForm] = useState({
@@ -20,6 +18,17 @@ const CreateReviewForm = ({ onCreated }) => {
     performanceAPI.getEmployees().then(res => setEmployees(res.data));
   }, []);
 
+  const resetForm = () => {
+    setForm({
+      userId: '',
+      rating: 5,
+      review_period: '',
+      goals: '',
+      achievements: '',
+      manager_feedback: ''
+    });
+  };
+
   const submit = async () => {
     if (!form.userId || !form.review_period) {
       alert('Please select employee and review period');
@@ -27,15 +36,17 @@ const CreateReviewForm = ({ onCreated }) => {
     }
 
     await performanceAPI.createReview(form);
-    onCreated();
     alert('Performance review created successfully');
+    resetForm();
+    onCreated();
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
+    <div className="bg-white rounded-2xl shadow-lg border p-6 mb-8">
       <h2 className="text-xl font-bold mb-4">Create Performance Review</h2>
 
       <select
+        value={form.userId}
         className="w-full mb-3 border rounded p-2"
         onChange={e => setForm({ ...form, userId: e.target.value })}
       >
@@ -49,24 +60,28 @@ const CreateReviewForm = ({ onCreated }) => {
       </select>
 
       <input
+        value={form.review_period}
         className="w-full mb-3 border rounded p-2"
         placeholder="Review Period (e.g. Q1 2025)"
         onChange={e => setForm({ ...form, review_period: e.target.value })}
       />
 
       <textarea
+        value={form.goals}
         className="w-full mb-3 border rounded p-2"
         placeholder="Goals"
         onChange={e => setForm({ ...form, goals: e.target.value })}
       />
 
       <textarea
+        value={form.achievements}
         className="w-full mb-3 border rounded p-2"
         placeholder="Achievements"
         onChange={e => setForm({ ...form, achievements: e.target.value })}
       />
 
       <textarea
+        value={form.manager_feedback}
         className="w-full mb-3 border rounded p-2"
         placeholder="Manager Feedback"
         onChange={e => setForm({ ...form, manager_feedback: e.target.value })}
@@ -82,19 +97,12 @@ const CreateReviewForm = ({ onCreated }) => {
   );
 };
 
-/* =====================================================
-   MAIN PERFORMANCE PAGE (UNCHANGED UI)
-===================================================== */
+/* ================= MAIN PAGE ================= */
 const Performance = () => {
   const { user } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    loadReviews();
-    // eslint-disable-next-line
-  }, []);
 
   const loadReviews = async () => {
     try {
@@ -108,83 +116,39 @@ const Performance = () => {
     }
   };
 
-  const formatDate = (date) =>
-    new Date(date).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    });
+  useEffect(() => {
+    loadReviews();
+  }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen pt-24 text-center">
-        <p>Loading performance reviews...</p>
-      </div>
-    );
-  }
+  if (loading) return <p className="pt-24 text-center">Loading...</p>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 pt-24 pb-12 px-4">
+    <div className="min-h-screen pt-24 px-4">
       <div className="max-w-7xl mx-auto">
 
-        {/* HEADER (UNCHANGED) */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Performance Reviews</h1>
-          <p className="text-gray-600 text-sm">Track your performance and achievements</p>
-        </div>
-
-        {/* ✅ ADMIN CREATE REVIEW (ONLY ADDITION) */}
         {(user.role === 'Admin' || user.role === 'HR') && (
           <CreateReviewForm onCreated={loadReviews} />
         )}
 
-        {/* ERROR */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded">
-            {error}
-          </div>
-        )}
+        {error && <div className="text-red-600">{error}</div>}
 
-        {/* REVIEWS LIST (UNCHANGED) */}
         {reviews.length === 0 ? (
-          <div className="bg-white p-10 text-center rounded-2xl shadow">
+          <div className="bg-white p-10 rounded shadow text-center">
             No Performance Reviews Yet
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {reviews.map(review => (
-              <div
-                key={review.id}
-                className="bg-white rounded-2xl shadow border overflow-hidden"
-              >
-                <div className="bg-indigo-600 text-white p-6">
-                  <h2 className="text-xl font-bold">{review.review_period}</h2>
-                  <p className="text-sm">{formatDate(review.created_at)}</p>
-                  <p className="text-2xl font-bold mt-2">⭐ {review.rating}/5</p>
-                </div>
-
-                <div className="p-6 space-y-3">
-                  {(user.role === 'Admin' || user.role === 'HR') && (
-                    <p className="font-semibold">
-                      Employee: {review.employee_name}
-                    </p>
-                  )}
-
-                  {review.goals && <p><b>Goals:</b> {review.goals}</p>}
-                  {review.achievements && <p><b>Achievements:</b> {review.achievements}</p>}
-                  {review.manager_feedback && (
-                    <p className="italic">"{review.manager_feedback}"</p>
-                  )}
-
-                  <span className="text-xs bg-green-100 px-3 py-1 rounded-full">
-                    {review.status || 'Completed'}
-                  </span>
-                </div>
+            {reviews.map(r => (
+              <div key={r.id} className="bg-white rounded shadow p-6">
+                <h3 className="font-bold">{r.review_period}</h3>
+                <p>⭐ {r.rating}/5</p>
+                {r.goals && <p><b>Goals:</b> {r.goals}</p>}
+                {r.achievements && <p><b>Achievements:</b> {r.achievements}</p>}
+                {r.manager_feedback && <p>"{r.manager_feedback}"</p>}
               </div>
             ))}
           </div>
         )}
-
       </div>
     </div>
   );
