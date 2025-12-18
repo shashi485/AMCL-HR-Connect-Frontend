@@ -14,6 +14,8 @@ import Attendance from './pages/Attendance';
 import Leave from './pages/Leave';
 import Performance from './pages/Performance';
 import Communication from './pages/Communication';
+import Announcements from './pages/Announcements';
+
 
 function App() {
   return (
@@ -82,6 +84,16 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+              <Route
+                path="/announcements"
+                element={
+                  <ProtectedRoute>
+                    <Announcements />
+                  </ProtectedRoute>
+                }
+              />
+
 
               {/* Fallback */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
