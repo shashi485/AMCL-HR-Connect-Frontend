@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  /* ================= LOAD USER FROM TOKEN ================= */
+  /* ================= LOAD USER FROM LOCAL STORAGE ================= */
   useEffect(() => {
     const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await authAPI.login(credentials);
 
-      // Save token & user
+      // ✅ SAVE JWT + USER
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
 
@@ -37,6 +37,24 @@ export const AuthProvider = ({ children }) => {
       return {
         success: false,
         message: err.response?.data?.message || 'Login failed'
+      };
+    }
+  };
+
+  /* ================= REGISTER ================= */
+  const register = async (data) => {
+    try {
+      const res = await authAPI.register(data);
+
+      // ✅ DO NOT SAVE TOKEN HERE
+      return {
+        success: true,
+        message: res.data.message || 'Registered successfully'
+      };
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Registration failed'
       };
     }
   };
@@ -53,6 +71,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         login,
+        register,       // ✅ EXPOSE REGISTER
         logout,
         isAuthenticated: !!user
       }}
