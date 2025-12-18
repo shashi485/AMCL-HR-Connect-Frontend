@@ -68,10 +68,7 @@ export const leaveAPI = {
 /* ================= PERFORMANCE ================= */
 
 export const performanceAPI = {
-  // Employee
   getReviews: () => api.get('/performance'),
-
-  // Admin / HR
   getEmployees: () => api.get('/performance/employees'),
   createReview: (data) => api.post('/performance', data)
 };
@@ -80,9 +77,13 @@ export const performanceAPI = {
 
 export const communicationAPI = {
   getMessages: () => api.get('/messages'),
+  getEmployees: () => api.get('/messages/employees'),
+
   sendMessage: (data) => api.post('/messages', data),
-  getAnnouncements: () => api.get('/messages/announcements'),
-  createAnnouncement: (data) => api.post('/messages/announcements', data)
+  markRead: (id) => api.put(`/messages/${id}/read`),
+
+  updateMessage: (id, data) => api.put(`/messages/${id}`, data),
+  deleteMessage: (id) => api.delete(`/messages/${id}`)
 };
 
 export default api;
