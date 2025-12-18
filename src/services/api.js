@@ -83,11 +83,12 @@ export const communicationAPI = {
   markRead: (id) => api.put(`/messages/${id}/read`),
 
   updateMessage: (id, data) => api.put(`/messages/${id}`, data),
-  deleteMessage: (id) => api.delete(`/messages/${id}`),
+  deleteMessage: (id) => api.delete(`/messages/${id}`)
+};
 
-  // Announcements
-  createAnnouncement: (data) => api.post('/announcements', data),
-  getAnnouncements: () => api.get('/announcements')
+export const announcementAPI = {
+  create: (data) => api.post('/announcements', data),
+  getAll: () => api.get('/announcements')
 };
 
 export default api;
