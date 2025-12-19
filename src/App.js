@@ -14,8 +14,7 @@ import Attendance from './pages/Attendance';
 import Leave from './pages/Leave';
 import Performance from './pages/Performance';
 import Communication from './pages/Communication';
-import AnnouncementsPage from './pages/AnnouncementsPage';
-
+import AnnouncementsPage from './pages/AnnouncementsPage'; // ✅ MUST MATCH JSX NAME
 
 function App() {
   return (
@@ -25,12 +24,13 @@ function App() {
           <Header />
           <main className="flex-1 pt-20 pb-10">
             <Routes>
-              {/* Public Routes */}
+
+              {/* Public */}
               <Route path="/" element={<Navigate to="/login" replace />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
 
-              {/* Protected Routes */}
+              {/* Protected */}
               <Route
                 path="/dashboard"
                 element={
@@ -85,6 +85,7 @@ function App() {
                 }
               />
 
+              {/* ✅ ANNOUNCEMENTS */}
               <Route
                 path="/announcements"
                 element={
@@ -94,9 +95,9 @@ function App() {
                 }
               />
 
-
               {/* Fallback */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
             </Routes>
           </main>
           <Footer />
