@@ -33,14 +33,14 @@ const Communication = () => {
 
     try {
       if (sendType === 'announcement') {
-        await announcementAPI.create({
+        await announcementAPI.createAnnouncement({
           title: form.subject,
           content: form.message
         });
-        alert('✅ Announcement published');
+        alert('Announcement published successfully');
       } else {
         await communicationAPI.sendMessage(form);
-        alert('✅ Message sent');
+        alert('Message sent successfully');
       }
 
       setForm({ receiverId: '', subject: '', message: '' });
@@ -48,8 +48,8 @@ const Communication = () => {
       loadMessages();
 
     } catch (err) {
+      alert('Failed to send');
       console.error(err);
-      alert('❌ Failed to send');
     }
   };
 
@@ -120,8 +120,7 @@ const Communication = () => {
         )}
 
         {messages.map(msg => (
-          <div key={msg.id}
-            className="bg-white p-5 rounded shadow mb-3">
+          <div key={msg.id} className="bg-white p-5 rounded shadow mb-3">
             <h3 className="font-semibold">{msg.subject}</h3>
             <p>{msg.message}</p>
           </div>

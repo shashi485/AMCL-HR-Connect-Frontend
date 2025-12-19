@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { communicationAPI } from '../services/api';
+import { announcementAPI } from '../services/api';
 
 const Announcements = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -11,10 +11,10 @@ const Announcements = () => {
 
   const loadAnnouncements = async () => {
     try {
-      const res = await communicationAPI.getAnnouncements();
+      const res = await announcementAPI.getAnnouncements();
       setAnnouncements(res.data);
     } catch (err) {
-      console.error('Failed to load announcements');
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -25,7 +25,7 @@ const Announcements = () => {
   }
 
   return (
-    <div className="min-h-screen pt-24 px-4 bg-gradient-to-br from-indigo-50 to-purple-50">
+    <div className="min-h-screen pt-24 px-4">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">All Announcements</h1>
 
@@ -36,10 +36,7 @@ const Announcements = () => {
         ) : (
           <div className="space-y-4">
             {announcements.map(ann => (
-              <div
-                key={ann.id}
-                className="bg-white p-6 rounded-xl shadow border"
-              >
+              <div key={ann.id} className="bg-white p-6 rounded-xl shadow border">
                 <h2 className="text-xl font-bold mb-1">{ann.title}</h2>
                 <p className="text-gray-600 mb-3">{ann.content}</p>
                 <span className="text-xs text-indigo-500">

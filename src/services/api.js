@@ -87,8 +87,8 @@ export const communicationAPI = {
 };
 
 export const announcementAPI = {
-  create: (data) => api.post('/announcements', data),
-  getAll: () => api.get('/announcements')
+  createAnnouncement: (data) => api.post('/announcements', data),
+  getAnnouncements: () => api.get('/announcements')
 };
 
 export default api;
