@@ -14,7 +14,7 @@ import Attendance from './pages/Attendance';
 import Leave from './pages/Leave';
 import Performance from './pages/Performance';
 import Communication from './pages/Communication';
-import Announcements from './pages/AnnouncementsPage';
+import AnnouncementsPage from './pages/AnnouncementsPage';
 
 
 function App() {
