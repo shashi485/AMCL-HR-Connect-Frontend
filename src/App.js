@@ -14,7 +14,7 @@ import Attendance from './pages/Attendance';
 import Leave from './pages/Leave';
 import Performance from './pages/Performance';
 import Communication from './pages/Communication';
-import AnnouncementsPage from './pages/AnnouncementsPage'; // ✅ THIS LINE
+import AnnouncementsPage from './pages/AnnouncementsPage'; // ✅ MUST MATCH JSX
 
 function App() {
   return (
@@ -22,67 +22,21 @@ function App() {
       <Router>
         <div className="min-h-screen flex flex-col bg-gray-50">
           <Header />
+
           <main className="flex-1 pt-20 pb-10">
             <Routes>
               <Route path="/" element={<Navigate to="/login" replace />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
 
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/attendance" element={<ProtectedRoute><Attendance /></ProtectedRoute>} />
+              <Route path="/leave" element={<ProtectedRoute><Leave /></ProtectedRoute>} />
+              <Route path="/performance" element={<ProtectedRoute><Performance /></ProtectedRoute>} />
+              <Route path="/communication" element={<ProtectedRoute><Communication /></ProtectedRoute>} />
 
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/attendance"
-                element={
-                  <ProtectedRoute>
-                    <Attendance />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/leave"
-                element={
-                  <ProtectedRoute>
-                    <Leave />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/performance"
-                element={
-                  <ProtectedRoute>
-                    <Performance />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/communication"
-                element={
-                  <ProtectedRoute>
-                    <Communication />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* ✅ THIS MUST MATCH THE IMPORT NAME */}
+              {/* ✅ ANNOUNCEMENTS */}
               <Route
                 path="/announcements"
                 element={
@@ -95,6 +49,7 @@ function App() {
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>
+
           <Footer />
         </div>
       </Router>
